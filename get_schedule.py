@@ -9,6 +9,7 @@ from Classes import Classroom
 
 PATH = r".\chromedriver.exe"
 UMINHO_URL = 'https://alunos.uminho.pt/pt/estudantes/paginas/infouteishorarios.aspx'
+HALF_HOUR = 0.5
 
 
 def makeClassroom(s,start,end,weekday):
@@ -46,6 +47,16 @@ def getClassroomDuration(Class, col):
         return list(map(lambda x: round(x/60), heights))
 
 def getPageHtml(course, course_year):
+    """gets the html table corresponding to the schedule and the start of the  earliest class.
+
+    Args:
+        course (string): name of course
+        course_year (string): year of course
+
+    Returns:
+        soup object: contains said html table
+        int:  start of the earliest class (hour)
+    """
     # Get driver to run in the background
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -74,15 +85,22 @@ def getPageHtml(course, course_year):
     return Table, start_time
 
 def getScheduleData():
+    """
+    returns a list of all the classes in the schedule.
+    Each class is a Classroom object.
+    """
+    
+    # get all user input
     start_data = input('What day do your classes start (yyyy-mm-dd): ')
     end_data = input('What day do your classes end (yyyy-mm-dd): ')
     course = input("Course name (ex: Licenciatura em Engenharia Física): ")
     course_year = input("Course year (ex: 1): ")
 
+    # fetch html and start time
     Table, start_time= getPageHtml(course, course_year)
 
+
     day_time = start_time
-    half_hour = 0.5
     classes = []
 
     for row in Table:
@@ -119,6 +137,6 @@ def getScheduleData():
 
             week_day += 1
 
-        day_time += half_hour
+        day_time += HALF_HOUR
     
     return classes, start_data, end_data

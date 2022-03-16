@@ -3,7 +3,7 @@ class Classroom:
     # Class Variables
     workDays = ['Monday','Tuesday','Wednesday','Thursday','Friday']
 
-    # Construct
+    # Constructor
     def __init__(self,name="",room="",type="",start=0,end = 0,weekday=0):
         self.name = name
         self.room = room
@@ -45,6 +45,7 @@ class Classroom:
 
 class Event:
 
+    # Constructor
     def __init__(self):
         self.event = {}
 
@@ -60,9 +61,10 @@ class Event:
     def set_duration(self,start,end,timezone="Europe/Lisbon"):
         self.event['start'] = {}
         self.event['end'] = {}
-        self.set_start_datetime(start)
-        self.set_end_datetime(end)
-        self.set_timezone(timezone)
+        self.event['start']['dateTime'] = start
+        self.event['end']['dateTime'] = end
+        self.event['start']['timeZone'] = timezone
+        self.event['end']['timeZone'] = timezone
 
     def set_recurrence(self,endDate,FREQ="WEEKLY"):
         self.event['recurrence'] = [f'RRULE:FREQ={FREQ};UNTIL={endDate+"Z"}']
@@ -70,13 +72,3 @@ class Event:
     def set_reminders(self,useDefault = True):
         self.event['reminders'] = {}
         self.event['reminders']['useDefault'] = useDefault
-
-    def set_start_datetime(self,start):
-        self.event['start']['dateTime'] = start
-
-    def set_end_datetime(self,endDate):
-        self.event['end']['dateTime'] = endDate
-
-    def set_timezone(self, timezone):
-        self.event['start']['timeZone'] = timezone
-        self.event['end']['timeZone'] = timezone

@@ -32,6 +32,14 @@ from Classes import Event, Classroom
 # }
 
 def to_RFC_3339(Date):
+    """isoformat Date
+
+    Args:
+        Date (string): Formated like yyyy-mm-dd
+
+    Returns:
+        string: Formated like isoformat
+    """
     year, month, day = list(map(lambda x: int(x), Date.split("-")))
 
     RFC_3339_date = datetime(year,month,day).isoformat()
@@ -39,13 +47,26 @@ def to_RFC_3339(Date):
     return RFC_3339_date
 
 def get_duration(startDate, eStart, eEnd, eWeekDay):
+    """ get duration of event
+
+    Args:
+        startDate (string): start of school date. Formated like yyyy-mm-dd
+        eStart (float): time of day the event starts (hour)
+        eEnd (float): time of day the event ends (hour)
+        eWeekDay (int): mapped [0,1,2,3,4] to [Monday,Tuesday, Wednesday, Thursday, Friday]
+
+    Returns:
+        string: start and end dates in isoformat  
+    """
     year, month, day = list(map(lambda x: int(x),startDate.split("-")))
     startHour, startMinute= int(eStart), 0
     endHour, endMinute= int(eEnd), 0
 
+    # check if event starts or ends between o'clocks
     if(eStart - startHour == 0.5): startMinute = 30
     if(eEnd - endHour == 0.5): endMinute = 30
 
+    # this loop makes sure that the start date of the event is correct
     while(datetime(year,month,day).weekday() != eWeekDay):
         day += 1
         # New Year
@@ -64,15 +85,27 @@ def get_duration(startDate, eStart, eEnd, eWeekDay):
     return startEvent, endEvent
 
 def create_event(classroom, startDate, endDate):
+    """Creates an event corresponding to the given classroom
+
+    Args:
+        classroom (object): contains all the class information
+        startDate (string): start of school date. Formated like yyyy-mm-dd
+        endDate (string): end of school date. Formated like yyyy-mm-dd
+
+    Returns:
+        _type_: returns an Event object
+    """
     newEvent = Event()
 
     newEvent.add_summary(classroom.getName())
     newEvent.add_location(classroom.getRoom())
     newEvent.add_description(classroom.getType())
 
+    # get the start and end dates in isoformat string
     startEvent, endEvent = get_duration(startDate, classroom.getStart(), classroom.getEnd(), classroom.getWeekDay())
     newEvent.set_duration(startEvent, endEvent)
 
+    # format endDate as isoformat string
     endDate = to_RFC_3339(endDate)
     newEvent.set_recurrence(endDate.replace("-","").replace(":",""),FREQ = "WEEKLY")
     newEvent.set_reminders(useDefault = True)
