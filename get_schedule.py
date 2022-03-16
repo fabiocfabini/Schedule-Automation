@@ -7,7 +7,7 @@ from selenium.webdriver.support.wait import  WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from Classes import Classroom
 
-PATH = r".\chromedriver.exe"
+PATH = r".\chromedriver.exe" # Path to the WebDriver executable
 UMINHO_URL = 'https://alunos.uminho.pt/pt/estudantes/paginas/infouteishorarios.aspx'
 HALF_HOUR = 0.5
 
@@ -62,7 +62,7 @@ def getPageHtml(course, course_year):
     options.add_argument('--headless')
 
     # Start Driver
-    driver = webdriver.Chrome(ChromeDriverManager().install(), options=options)
+    driver = webdriver.Chrome(executable_path=PATH, options=options)
     driver.get(UMINHO_URL)
 
     # Get the html
