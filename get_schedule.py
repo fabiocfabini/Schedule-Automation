@@ -4,6 +4,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import  WebDriverWait
+from webdriver_manager.chrome import ChromeDriverManager
 from Classes import Event
 
 PATH = r".\chromedriver.exe" # Path to the WebDriver executable
@@ -45,7 +46,7 @@ def getEventDuration(Class, col):
         
         return list(map(lambda x: round(x/60), heights))
 
-def getPageHtml(course, course_year):
+def getPageHtml(course, course_year, debug=False):
     """gets the html table corresponding to the schedule and the start of the  earliest class.
 
     Args:
@@ -61,7 +62,18 @@ def getPageHtml(course, course_year):
     options.add_argument('--headless')
 
     # Start Driver
-    driver = webdriver.Chrome(executable_path=PATH, options=options)
+    options = webdriver.ChromeOptions()
+    options.add_argument("start-maximized")
+    options.add_argument("disable-infobars")
+    options.add_argument("--disable-extensions")
+    options.add_argument("window-size=1400,2100")
+    if debug is False:
+        options.add_argument("--no-sandbox")
+        options.add_argument("--headless")
+        options.add_argument("disable-gpu")
+
+    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+    driver.minimize_window()
     driver.get(UMINHO_URL)
 
     # Get the html
