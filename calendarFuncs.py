@@ -1,6 +1,6 @@
 from pprint import pprint
 from datetime import datetime
-from Classes import Event, Classroom
+from Classes import Event, EventBuilder
 
 #* EVENT BODY
 # event = {
@@ -84,25 +84,25 @@ def get_duration(startDate, eStart, eEnd, eWeekDay):
 
     return startEvent, endEvent
 
-def create_event(classroom, startDate, endDate):
-    """Creates an event corresponding to the given classroom
+def build_event(event, startDate, endDate):
+    """Creates an event corresponding to the given event
 
     Args:
-        classroom (object): contains all the class information
+        event (object): contains all the class information
         startDate (string): start of school date. Formated like yyyy-mm-dd
         endDate (string): end of school date. Formated like yyyy-mm-dd
 
     Returns:
         _type_: returns an Event object
     """
-    newEvent = Event()
+    newEvent = EventBuilder()
 
-    newEvent.add_summary(classroom.getName())
-    newEvent.add_location(classroom.getRoom())
-    newEvent.add_description(classroom.getType())
+    newEvent.add_summary(event.getName())
+    newEvent.add_location(event.getRoom())
+    newEvent.add_description(event.getType())
 
     # get the start and end dates in isoformat string
-    startEvent, endEvent = get_duration(startDate, classroom.getStart(), classroom.getEnd(), classroom.getWeekDay())
+    startEvent, endEvent = get_duration(startDate, event.getStart(), event.getEnd(), event.getWeekDay())
     newEvent.set_duration(startEvent, endEvent)
 
     # format endDate as isoformat string

@@ -18,7 +18,7 @@ if __name__ == '__main__':
 
     for classroom in classes:
         start, end = startDate, endDate
-        newEvent = create_event(classroom, start, end)
+        newEvent = build_event(classroom, start, end)
 
         service.events().insert(calendarId='primary', body=newEvent.event).execute()
 

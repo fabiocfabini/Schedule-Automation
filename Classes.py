@@ -1,4 +1,4 @@
-class Classroom:
+class Event:
 
     # Class Variables
     workDays = ['Monday','Tuesday','Wednesday','Thursday','Friday']
@@ -41,9 +41,9 @@ class Classroom:
         self.weekday = weekDay
 
     def __str__(self):
-        return "( " + str(self.name) + " , " + str(self.room) + " , " + str(self.type) + " , " + str(self.end-self.start) + "h, " + Classroom.workDays[self.getWeekDay()] + " )"
+        return "( " + str(self.name) + " , " + str(self.room) + " , " + str(self.type) + " , " + str(self.end-self.start) + "h, " + Event.workDays[self.getWeekDay()] + " )"
 
-class Event:
+class EventBuilder:
 
     # Constructor
     def __init__(self):

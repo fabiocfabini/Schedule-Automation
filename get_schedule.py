@@ -5,14 +5,14 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import  WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-from Classes import Classroom
+from Classes import Event
 
 PATH = r".\chromedriver.exe" # Path to the WebDriver executable
 UMINHO_URL = 'https://alunos.uminho.pt/pt/estudantes/paginas/infouteishorarios.aspx'
 HALF_HOUR = 0.5
 
 
-def makeClassroom(s,start,end,weekday):
+def makeEvent(s,start,end,weekday):
     aulaData = s.text.strip().replace("\n"," ").replace("\t", " ")
     aulaData = " ".join(aulaData.split())
     aulaData = aulaData.split(" [")
@@ -22,9 +22,9 @@ def makeClassroom(s,start,end,weekday):
     room = aulaData2[0]
     type = aulaData2[1]
 
-    return Classroom(name,room,type,start,end,weekday)
+    return Event(name,room,type,start,end,weekday)
 
-def getClassroomName(s):
+def getEventName(s):
     aulaData = s.text.strip().replace("\n"," ").replace("\t", " ")
     aulaData = " ".join(aulaData.split())
     aulaData = aulaData.split(" [")
@@ -35,7 +35,7 @@ def getClassroomName(s):
 
     return name, type
 
-def getClassroomDuration(Class, col):
+def getEventDuration(Class, col):
     if(len(Class) == 1): 
         height = int(col.find("div", {"class": "rsApt rsAptSimple"})['style'].split(";")[1].replace("height:","").replace("px",""))
 
@@ -87,7 +87,7 @@ def getPageHtml(course, course_year):
 def getScheduleData():
     """
     returns a list of all the classes in the schedule.
-    Each class is a Classroom object.
+    Each class is a Event object.
     """
     
     # get all user input
@@ -112,18 +112,18 @@ def getScheduleData():
             Class = col.findAll("div", {"class": "rsAptContent"})
             if(len(Class) == 1):
 
-                hour = getClassroomDuration(Class, col)
-                cls = makeClassroom(Class[0], day_time, day_time+hour, week_day)
+                hour = getEventDuration(Class, col)
+                cls = makeEvent(Class[0], day_time, day_time+hour, week_day)
                 classes.append(cls)
 
             elif(len(Class) > 1):
                 stage = "pm"
                 if 0 <= day_time <= 12: stage = "am"
-                print(f"\nIt appears that your schedule has multiple classes at {int(day_time)}{stage}h on a {Classroom.workDays[week_day]}.")
+                print(f"\nIt appears that your schedule has multiple classes at {int(day_time)}{stage}h on a {Event.workDays[week_day]}.")
                 
-                hours = getClassroomDuration(Class,col)
+                hours = getEventDuration(Class,col)
                 for i,cls in enumerate(Class):
-                    print(f"\t{i} ->", getClassroomName(cls))
+                    print(f"\t{i} ->", getEventName(cls))
                 
                 try:
                     classIndex = int(input("Specify the Class with the proper number (ENTER for None): "))
@@ -132,7 +132,7 @@ def getScheduleData():
                 finally:
                     if(classIndex >= 0):
                         hour = hours[classIndex]
-                        cls = makeClassroom(Class[classIndex], day_time, day_time+hour, week_day)
+                        cls = makeEvent(Class[classIndex], day_time, day_time+hour, week_day)
                         classes.append(cls)
 
             week_day += 1
