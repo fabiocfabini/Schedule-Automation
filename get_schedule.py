@@ -4,7 +4,6 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import  WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from Classes import Event
 
 PATH = r".\chromedriver.exe" # Path to the WebDriver executable
