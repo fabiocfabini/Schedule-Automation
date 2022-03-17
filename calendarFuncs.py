@@ -1,5 +1,6 @@
 from pprint import pprint
 from datetime import datetime
+from datefinder import find_dates
 from Classes import Event, EventBuilder
 
 #* EVENT BODY
@@ -31,26 +32,11 @@ from Classes import Event, EventBuilder
 #     },
 # }
 
-def to_RFC_3339(Date):
-    """isoformat Date
-
-    Args:
-        Date (string): Formated like yyyy-mm-dd
-
-    Returns:
-        string: Formated like isoformat
-    """
-    year, month, day = list(map(lambda x: int(x), Date.split("-")))
-
-    RFC_3339_date = datetime(year,month,day).isoformat()
-
-    return RFC_3339_date
-
 def get_duration(startDate, eStart, eEnd, eWeekDay):
     """ get duration of event
 
     Args:
-        startDate (string): start of school date. Formated like yyyy-mm-dd
+        startDate (datetime object): start of school date.
         eStart (float): time of day the event starts (hour)
         eEnd (float): time of day the event ends (hour)
         eWeekDay (int): mapped [0,1,2,3,4] to [Monday,Tuesday, Wednesday, Thursday, Friday]
@@ -58,7 +44,6 @@ def get_duration(startDate, eStart, eEnd, eWeekDay):
     Returns:
         string: start and end dates in isoformat  
     """
-    year, month, day = list(map(lambda x: int(x),startDate.split("-")))
     startHour, startMinute= int(eStart), 0
     endHour, endMinute= int(eEnd), 0
 
@@ -67,8 +52,8 @@ def get_duration(startDate, eStart, eEnd, eWeekDay):
     if(eEnd - endHour == 0.5): endMinute = 30
 
     # this loop makes sure that the start date of the event is correct
-    while(datetime(year,month,day).weekday() != eWeekDay):
-        day += 1
+    while(startDate.weekday() != eWeekDay):
+        year = startDate.year; month = startDate.month; day = startDate.day + 1
         # New Year
         if(month == 12 and day > 31):
             year, month, day = year + 1, 1, 1
@@ -78,9 +63,11 @@ def get_duration(startDate, eStart, eEnd, eWeekDay):
         # 30/31 day months
         elif((month in [1,3,4,7,9,10] and day > 31) or (month not in [1,3,4,7,9,10] and day > 30)):
             month, day = month + 1, 1
+        
+        startDate = startDate.replace(day=day,month=month,year=year)
 
-    startEvent = datetime(year,month,day,startHour,startMinute).isoformat()
-    endEvent = datetime(year,month,day,endHour,endMinute).isoformat()
+    startEvent = startDate.replace(minute=startMinute,hour=startHour).isoformat()
+    endEvent = startDate.replace(minute=endMinute,hour=endHour).isoformat()
 
     return startEvent, endEvent
 
@@ -89,24 +76,25 @@ def build_event(event, startDate, endDate):
 
     Args:
         event (object): contains all the class information
-        startDate (string): start of school date. Formated like yyyy-mm-dd
-        endDate (string): end of school date. Formated like yyyy-mm-dd
+        startDate (datetime object): start of school date.
+        endDate (datetime object): end of school date.
 
     Returns:
         _type_: returns an Event object
     """
+
     newEvent = EventBuilder()
 
     newEvent.add_summary(event.getName())
     newEvent.add_location(event.getRoom())
     newEvent.add_description(event.getType())
 
-    # get the start and end dates in isoformat string
+    # get the start and end events in isoformat string
     startEvent, endEvent = get_duration(startDate, event.getStart(), event.getEnd(), event.getWeekDay())
     newEvent.set_duration(startEvent, endEvent)
 
     # format endDate as isoformat string
-    endDate = to_RFC_3339(endDate)
+    endDate = endDate.isoformat()
     newEvent.set_recurrence(endDate.replace("-","").replace(":",""),FREQ = "WEEKLY")
     newEvent.set_reminders(useDefault = True)
 

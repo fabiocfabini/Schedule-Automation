@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup as soup
+from datetime import datetime
+from datefinder import find_dates
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import  WebDriverWait
@@ -82,7 +83,7 @@ def getPageHtml(course, course_year, debug=False):
     username_btn.send_keys(course)
     find_btn.click()
     find_btn = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"a[title='procurar']")))
-    _btn = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,f"input[value='{course_year}']"))).click()
+    WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,f"input[value='{course_year}']"))).click()
     find_btn.click()
     page_html = driver.page_source
     driver.close()
@@ -104,12 +105,23 @@ def getScheduleData():
     # get all user input
     start_data = input('What day do your classes start (yyyy-mm-dd): ')
     end_data = input('What day do your classes end (yyyy-mm-dd): ')
+
+    try:
+        start_data = next(find_dates(start_data))
+        end_data = next(find_dates(end_data))
+    except StopIteration: 
+        print("Please input a valid date.")
+        return [], "", ""
+    else:
+        if(end_data < start_data):
+            print("Your classes appear to finish before they even begin. Please check your date inputs.")
+            return [], "", ""
+
     course = input("Course name (ex: Licenciatura em Engenharia Física): ")
     course_year = input("Course year (ex: 1): ")
 
     # fetch html and start time
     Table, start_time= getPageHtml(course, course_year)
-
 
     day_time = start_time
     classes = []
@@ -130,7 +142,7 @@ def getScheduleData():
             elif(len(Class) > 1):
                 stage = "pm"
                 if 0 <= day_time <= 12: stage = "am"
-                print(f"\nIt appears that your schedule has multiple classes at {int(day_time)}{stage}h on a {Event.workDays[week_day]}.")
+                print(f"\nIt appears that your schedule has multiple classes at {int(day_time)}{stage} on a {Event.workDays[week_day]}.")
                 
                 hours = getEventDuration(Class,col)
                 for i,cls in enumerate(Class):
@@ -149,5 +161,5 @@ def getScheduleData():
             week_day += 1
 
         day_time += HALF_HOUR
-    
+
     return classes, start_data, end_data
