@@ -1,5 +1,4 @@
 from bs4 import BeautifulSoup as soup
-from datetime import datetime
 from datefinder import find_dates
 from selenium import webdriver
 from selenium.webdriver.support import expected_conditions as EC
@@ -8,7 +7,7 @@ from selenium.webdriver.support.wait import  WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from Classes import Event
 
-PATH = r".\chromedriver.exe" # Path to the WebDriver executable
+PATH = r"./chromedriver" # Path to the WebDriver executable
 UMINHO_URL = 'https://alunos.uminho.pt/pt/estudantes/paginas/infouteishorarios.aspx'
 HALF_HOUR = 0.5
 
@@ -73,7 +72,8 @@ def getPageHtml(course, course_year, debug=False):
         options.add_argument("--headless")
         options.add_argument("disable-gpu")
 
-    driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options)
+    # driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options) -> if Chrome webDriver is not installed
+    driver = webdriver.Chrome(PATH) # -> if you have Chrome webdriver (Path must contain the path to the driver executable)
     driver.minimize_window()
     driver.get(UMINHO_URL)
 
