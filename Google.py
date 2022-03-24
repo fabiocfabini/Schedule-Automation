@@ -99,15 +99,11 @@ class GoogleSheetsHelper:
 		}
 		return json_body
 
-
-
 class GoogleCalendarHelper:
 	...
 
 class GoogleDriverHelper:
 	...
-
-
 
 if __name__ == '__main__':
 	g = GoogleSheetsHelper()

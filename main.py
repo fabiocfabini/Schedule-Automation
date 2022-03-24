@@ -1,4 +1,5 @@
 from Google import create_service
+from tqdm import tqdm
 from Classes import *
 from calendarFuncs import *
 from get_schedule import *
@@ -16,12 +17,12 @@ if __name__ == '__main__':
     classes, startDate, endDate = getScheduleData()
     ok = 0
 
-    for classroom in classes:
+    for classroom in tqdm(classes, desc="Adding Classes"):
         ok = 1
         start, end = startDate, endDate
         newEvent = build_event(classroom, start, end)
 
-        service.events().insert(calendarId='primary', body=newEvent.event).execute()
+        service.events().insert(calendarId='srpdcljn2g344m8irfqsgsdo54@group.calendar.google.com', body=newEvent.event).execute()
 
         del newEvent
 
