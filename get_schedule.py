@@ -1,10 +1,10 @@
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.support.wait import  WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup as soup
 from datefinder import find_dates
-from selenium import webdriver
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.wait import  WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from Classes import Event
 
 PATH = r"./chromedriver" # Path to the WebDriver executable

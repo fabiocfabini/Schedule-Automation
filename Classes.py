@@ -41,7 +41,16 @@ class Event:
         self.weekday = weekDay
 
     def __str__(self):
-        return "( " + str(self.name) + " , " + str(self.room) + " , " + str(self.type) + " , " + str(self.end-self.start) + "h, " + Event.workDays[self.getWeekDay()] + " )"
+        return (
+            "( " +
+            str(self.name) + " , " + 
+            str(self.room) + " , " + 
+            str(self.type) + " , " + 
+            str(self.type) + " , " + 
+            str(self.start) + "h, " +
+            str(self.end-self.start) + "h, " + 
+            Event.workDays[self.getWeekDay()] + " )"
+            )
 
 class EventBuilder:
 
