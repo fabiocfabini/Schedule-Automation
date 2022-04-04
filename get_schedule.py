@@ -57,9 +57,6 @@ def getPageHtml(course, course_year, debug=False):
         soup object: contains said html table
         int:  start of the earliest class (hour)
     """
-    # Get driver to run in the background
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
 
     # Start Driver
     options = webdriver.ChromeOptions()
