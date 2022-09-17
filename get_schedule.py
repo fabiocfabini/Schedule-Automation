@@ -70,7 +70,7 @@ def getPageHtml(course, course_year, debug=False):
         options.add_argument("disable-gpu")
 
     # driver = webdriver.Chrome(ChromeDriverManager().install(), chrome_options=options) -> if Chrome webDriver is not installed
-    driver = webdriver.Chrome(PATH) # -> if you have Chrome webdriver (Path must contain the path to the driver executable)
+    driver = webdriver.Chrome(ChromeDriverManager().install()) # -> if you have Chrome webdriver (Path must contain the path to the driver executable)
     driver.minimize_window()
     driver.get(UMINHO_URL)
 

@@ -22,7 +22,7 @@ if __name__ == '__main__':
         start, end = startDate, endDate
         newEvent = build_event(classroom, start, end)
 
-        service.events().insert(calendarId='primary', body=newEvent.event).execute()
+        service.events().insert(calendarId='srpdcljn2g344m8irfqsgsdo54@group.calendar.google.com', body=newEvent.event).execute()
 
         del newEvent
 
