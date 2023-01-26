@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup as soup
 from datefinder import find_dates
 from Classes import Event
+from datetime import datetime
 
 PATH = r"./chromedriver" # Path to the WebDriver executable
 UMINHO_URL = 'https://alunos.uminho.pt/pt/estudantes/paginas/infouteishorarios.aspx'
@@ -46,7 +47,7 @@ def getEventDuration(Class, col):
         
         return list(map(lambda x: round(x/60), heights))
 
-def getPageHtml(course, course_year, debug=False):
+def getPageHtml(course, course_year, date: datetime, debug=False):
     """gets the html table corresponding to the schedule and the start of the  earliest class.
 
     Args:
@@ -82,6 +83,13 @@ def getPageHtml(course, course_year, debug=False):
     find_btn = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"a[title='procurar']")))
     WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,f"input[value='{course_year}']"))).click()
     find_btn.click()
+    date_btn = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"input[id='ctl00_ctl40_g_e84a3962_8ce0_47bf_a5c3_d5f9dd3927ef_ctl00_dataWeekSelect_dateInput']")))
+    find_btn = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.CSS_SELECTOR,"a[title='procurar']")))
+    #clear date
+    date_btn.clear()
+    date_btn.send_keys(f"{date.day}-{date.month}-{date.year}")
+    find_btn.click()
+
     page_html = driver.page_source
     driver.close()
 
@@ -102,7 +110,6 @@ def getScheduleData():
     # get all user input
     start_data = input('What day do your classes start (yyyy-mm-dd): ')
     end_data = input('What day do your classes end (yyyy-mm-dd): ')
-
     try:
         start_data = next(find_dates(start_data))
         end_data = next(find_dates(end_data))
@@ -118,7 +125,7 @@ def getScheduleData():
     course_year = input("Course year (ex: 1): ")
 
     # fetch html and start time
-    Table, start_time= getPageHtml(course, course_year)
+    Table, start_time= getPageHtml(course, course_year, start_data)
 
     day_time = start_time
     classes = []
